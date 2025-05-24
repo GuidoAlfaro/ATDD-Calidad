@@ -1,0 +1,55 @@
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+import io.github.bonigarcia.wdm.WebDriverManager;
+import static org.testng.Assert.assertTrue;
+
+public class DashboardRecomendacionesTest {
+
+    private WebDriver driver;
+    private WebDriverWait wait;
+
+    @BeforeTest
+    public void setUp() {
+        WebDriverManager.chromedriver().setup();
+        driver = new ChromeDriver();
+        wait = new WebDriverWait(driver, 10); // Espera explícita
+    }
+
+    @AfterTest
+    public void tearDown() throws InterruptedException {
+        if (driver != null) {
+            Thread.sleep(5000);
+            driver.quit();
+        }
+    }
+
+    @Test
+    public void redireccionaALoginSiNoHaySesion() {
+
+        /********** 1. Preparación de la prueba **********/
+        driver.get("http://localhost:5173");
+
+        /********** 2. Lógica de la prueba **********/
+        WebElement boton = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//*[@id='app']/div/main/div/div/div[1]/div/a")));
+        boton.click();
+
+        wait.until(ExpectedConditions.or(
+                ExpectedConditions.urlContains("/login"),
+                ExpectedConditions.urlContains("/dashboard")
+        ));
+
+        /********** 3. Verificación de la situación esperada **********/
+        String urlFinal = driver.getCurrentUrl();
+        assertTrue(urlFinal.contains("/login"), "Debe redirigir a login si no hay sesión activa.");
+        System.out.println("✅ Redirige correctamente al login.");
+    }
+
+}
