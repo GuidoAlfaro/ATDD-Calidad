@@ -2,12 +2,16 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import io.github.bonigarcia.wdm.WebDriverManager;
+
+import java.time.Duration;
+
 import static org.testng.Assert.assertTrue;
 
 public class DashboardRecomendacionesTest {
@@ -18,9 +22,16 @@ public class DashboardRecomendacionesTest {
     @BeforeTest
     public void setUp() {
         WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
-        wait = new WebDriverWait(driver, 10); // Espera explícita
+
+        ChromeOptions options = new ChromeOptions();
+        if (System.getenv("CI") != null) {
+            options.addArguments("--headless=new"); // Solo si corre en GitHub Actions
+        }
+
+        driver = new ChromeDriver(options);
+        wait = new WebDriverWait(driver, 10);
     }
+
 
     @AfterTest
     public void tearDown() throws InterruptedException {
@@ -49,7 +60,7 @@ public class DashboardRecomendacionesTest {
         /********** 3. Verificación de la situación esperada **********/
         String urlFinal = driver.getCurrentUrl();
         assertTrue(urlFinal.contains("/login"), "Debe redirigir a login si no hay sesión activa.");
-        System.out.println("✅ Redirige correctamente al login.");
+        System.out.println("Redirige correctamente al login.");
     }
 
 }
