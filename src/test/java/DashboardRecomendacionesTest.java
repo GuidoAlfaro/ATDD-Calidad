@@ -10,8 +10,6 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import io.github.bonigarcia.wdm.WebDriverManager;
 
-import java.time.Duration;
-
 import static org.testng.Assert.assertTrue;
 
 public class DashboardRecomendacionesTest {
