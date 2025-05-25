@@ -37,29 +37,41 @@ public class ContactanosTest {
     }
 
     @Test
-    public void enviarMensajeContacto() {
-        driver.get("https://husktsuuu.github.io/SIS3/"); // Cambia la URL aquí
+    public void enviarMensajeContacto() throws InterruptedException {
+        driver.get("https://husktsuuu.github.io/SIS3/");
+        Thread.sleep(1000);
 
         // 1. Hacer clic en el botón "Contáctanos"
         WebElement contactanosBtn = wait.until(ExpectedConditions.elementToBeClickable(
             By.xpath("//*[@id=\"app\"]/div/div/nav/div/div/div[2]/a[2]")));
         contactanosBtn.click();
+        Thread.sleep(1000);
 
         // 2. Esperar a que cargue la página de contacto
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='name']")));
+        Thread.sleep(500);
 
         // 3. Llenar el formulario
         driver.findElement(By.xpath("//*[@id='name']")).sendKeys("Juan Pérez");
+        Thread.sleep(300);
         driver.findElement(By.xpath("//*[@id='email']")).sendKeys("juan" + System.currentTimeMillis() + "@correo.com");
+        Thread.sleep(300);
         driver.findElement(By.xpath("//*[@id='subject']")).sendKeys("Consulta sobre el sistema");
+        Thread.sleep(300);
         driver.findElement(By.xpath("//*[@id='message']")).sendKeys("Hola, quisiera más información sobre el sistema.");
+        Thread.sleep(300);
 
         // 4. Enviar el formulario
         driver.findElement(By.xpath("//*[@id='app']/div/main/div/div/div/div/div/div[2]/form/button")).click();
+        Thread.sleep(1000);
 
-        // 5. Verificar mensaje de éxito (ajusta el xpath/texto según tu app)
-        WebElement successMsg = wait.until(ExpectedConditions.visibilityOfElementLocated(
-            By.xpath("//h3[contains(text(), '¡Mensaje enviado!')]"))); // Ajusta si el texto es diferente
-        assertTrue(successMsg.isDisplayed(), "El mensaje de éxito debe estar visible.");
+        // 5. Esperar a que aparezca el botón de confirmación
+        WebElement confirmBtn = wait.until(ExpectedConditions.visibilityOfElementLocated(
+            By.xpath("//*[@id='app']/div/main/div/div[1]/div/div/button")));
+        assertTrue(confirmBtn.isDisplayed(), "El botón de confirmación debe estar visible.");
+
+        // 6. Haz clic en el botón para cerrar el mensaje
+        confirmBtn.click();
+        Thread.sleep(500);
     }
 }
