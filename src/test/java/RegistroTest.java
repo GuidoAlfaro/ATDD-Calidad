@@ -19,43 +19,43 @@ public class RegistroTest {
 
     @BeforeTest
     public void setUp() {
+        // Configurar el WebDriver
         WebDriverManager.chromedriver().setup();
-
         ChromeOptions options = new ChromeOptions();
         if (System.getenv("CI") != null) {
             options.addArguments("--headless=new"); // Para entornos CI
         }
-
         driver = new ChromeDriver(options);
-        wait = new WebDriverWait(driver, 15); // Aumenté a 15 segundos para entornos remotos
+        wait = new WebDriverWait(driver, 15); // Tiempo de espera de 15 segundos
     }
 
     @AfterTest
-    public void tearDown() throws InterruptedException {
+    public void tearDown() {
+        // Cerrar el navegador para liberar recursos
         if (driver != null) {
-            Thread.sleep(5000); // Pausa para debugging (opcional)
-            driver.quit();
+            driver.quit(); // Similar a closeDriver()
         }
     }
 
     @Test
     public void registroExitoso() {
-        /********** 1. Preparación de la prueba **********/
+        /************** Preparación de la prueba ***************/
+        // Paso 1: Navegar a la página principal
         driver.get("https://husktsuuu.github.io/SIS3/");
 
-        // Hacer clic en el enlace de "Registrarse" en la barra de navegación
+        // Paso 2: Hacer clic en el enlace de "Registrarse" en la barra de navegación
         WebElement registerLink = wait.until(ExpectedConditions.elementToBeClickable(
                 By.xpath("//*[@id='app']/div/div/nav/div/div/div[2]/a[4]")));
+
+        // Paso 3: Verificar que el enlace es clickable antes de interactuar
+        assertTrue(registerLink.isDisplayed(), "El enlace de 'Registrarse' debería estar visible.");
+
+        /************** Lógica de la prueba ***************/
+        // Paso 4: Hacer clic en el enlace de "Registrarse"
         registerLink.click();
 
-        // Verificar que llegamos a la página de registro
-        wait.until(ExpectedConditions.urlToBe("https://husktsuuu.github.io/register"));
-
-        /********** 2. Lógica de la prueba **********/
-        // Generar un correo único usando timestamp
+        // Paso 5: Completar el formulario de registro
         String uniqueEmail = "testuser" + System.currentTimeMillis() + "@example.com";
-
-        // Localizar los campos del formulario
         WebElement nameField = wait.until(ExpectedConditions.visibilityOfElementLocated(
                 By.xpath("//*[@id='name']")));
         WebElement emailField = wait.until(ExpectedConditions.visibilityOfElementLocated(
@@ -64,30 +64,28 @@ public class RegistroTest {
                 By.xpath("//*[@id='password']")));
         WebElement submitButton = wait.until(ExpectedConditions.elementToBeClickable(
                 By.xpath("//*[@id='app']/div/main/div/div/div[1]/div/button")));
-
-        // Completar el formulario
         nameField.sendKeys("Test User");
         emailField.sendKeys(uniqueEmail);
         passwordField.sendKeys("Password123");
+
+        // Paso 6: Hacer clic en el botón "Registrarse"
         submitButton.click();
 
-        // Esperar a que aparezca el diálogo de éxito
+        /************** Verificación de la situación esperada ***************/
+        // Paso 7: Verificar que aparece el diálogo de éxito
         WebElement successMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(
                 By.xpath("//h3[contains(text(), '¡Registro Exitoso!')]")));
         assertTrue(successMessage.isDisplayed(), "El diálogo de éxito debería estar visible.");
 
-        // Hacer clic en el botón "Continuar"
+        // Paso 8: Hacer clic en el botón "Continuar" y verificar redirección
         WebElement continueButton = wait.until(ExpectedConditions.elementToBeClickable(
                 By.xpath("//button[contains(text(), 'Continuar')]")));
         continueButton.click();
-
-        // Esperar a que la aplicación redirija al dashboard
         wait.until(ExpectedConditions.urlToBe("https://husktsuuu.github.io/dashboard"));
-
-        /********** 3. Verificación del resultado esperado **********/
         String urlFinal = driver.getCurrentUrl();
         assertTrue(urlFinal.equals("https://husktsuuu.github.io/dashboard"),
                 "Debe redirigir al dashboard tras un registro exitoso.");
+
         System.out.println("Registro exitoso y redirección al dashboard correcta.");
     }
 }
