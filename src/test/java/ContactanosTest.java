@@ -53,13 +53,13 @@ public class ContactanosTest {
 
         // 3. Llenar el formulario
         driver.findElement(By.xpath("//*[@id='name']")).sendKeys("Juan Pérez");
-        Thread.sleep(300);
+        Thread.sleep(500);
         driver.findElement(By.xpath("//*[@id='email']")).sendKeys("juan" + System.currentTimeMillis() + "@correo.com");
-        Thread.sleep(300);
+        Thread.sleep(500);
         driver.findElement(By.xpath("//*[@id='subject']")).sendKeys("Consulta sobre el sistema");
-        Thread.sleep(300);
+        Thread.sleep(500);
         driver.findElement(By.xpath("//*[@id='message']")).sendKeys("Hola, quisiera más información sobre el sistema.");
-        Thread.sleep(300);
+        Thread.sleep(500);
 
         // 4. Enviar el formulario
         driver.findElement(By.xpath("//*[@id='app']/div/main/div/div/div/div/div/div[2]/form/button")).click();
