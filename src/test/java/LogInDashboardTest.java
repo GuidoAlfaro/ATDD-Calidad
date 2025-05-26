@@ -12,7 +12,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 
 import static org.testng.Assert.assertTrue;
 
-public class DashboardRecomendacionesTest {
+public class LogInDashboardTest {
 
     private WebDriver driver;
     private WebDriverWait wait;
@@ -43,9 +43,14 @@ public class DashboardRecomendacionesTest {
     public void redireccionaALoginSiNoHaySesion() {
 
         /********** 1. Preparación de la prueba **********/
-        driver.get("http://localhost:5173");
+        driver.get("https://husktsuuu.github.io/SIS3/");
 
         /********** 2. Lógica de la prueba **********/
+        WebElement botonInicio = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//*[@id=\"app\"]/div/div/nav/div/div/div[2]/a[1]")));
+        botonInicio.click();
+
+
         WebElement boton = wait.until(ExpectedConditions.elementToBeClickable(
                 By.xpath("//*[@id='app']/div/main/div/div/div[1]/div/a")));
         boton.click();
