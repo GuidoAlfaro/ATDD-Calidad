@@ -27,7 +27,7 @@ public class RegistroTest {
         }
 
         driver = new ChromeDriver(options);
-        wait = new WebDriverWait(driver, 10); // Espera máxima de 10 segundos
+        wait = new WebDriverWait(driver, 15); // Aumenté a 15 segundos para entornos remotos
     }
 
     @AfterTest
@@ -41,7 +41,15 @@ public class RegistroTest {
     @Test
     public void registroExitoso() {
         /********** 1. Preparación de la prueba **********/
-        driver.get("http://localhost:5173/register");
+        driver.get("https://husktsuuu.github.io/SIS3/");
+
+        // Hacer clic en el enlace de "Registrarse" en la barra de navegación
+        WebElement registerLink = wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//*[@id='app']/div/div/nav/div/div/div[2]/a[4]")));
+        registerLink.click();
+
+        // Verificar que llegamos a la página de registro
+        wait.until(ExpectedConditions.urlToBe("https://husktsuuu.github.io/register"));
 
         /********** 2. Lógica de la prueba **********/
         // Generar un correo único usando timestamp
@@ -74,11 +82,11 @@ public class RegistroTest {
         continueButton.click();
 
         // Esperar a que la aplicación redirija al dashboard
-        wait.until(ExpectedConditions.urlToBe("http://localhost:5173/dashboard"));
+        wait.until(ExpectedConditions.urlToBe("https://husktsuuu.github.io/dashboard"));
 
         /********** 3. Verificación del resultado esperado **********/
         String urlFinal = driver.getCurrentUrl();
-        assertTrue(urlFinal.equals("http://localhost:5173/dashboard"), 
+        assertTrue(urlFinal.equals("https://husktsuuu.github.io/dashboard"),
                 "Debe redirigir al dashboard tras un registro exitoso.");
         System.out.println("Registro exitoso y redirección al dashboard correcta.");
     }
